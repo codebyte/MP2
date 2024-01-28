@@ -1,34 +1,31 @@
-from flask import Flask, request
-app = Flask(__name__)
-import socket, subprocess
+from multiprocessing import Pool
+from multiprocessing import cpu_count
+import time
 
-seed_value=0
+# Do intensive computation to stress the CPU
+def stress_cpu(n):
+    total = 0
+    for i in range(n):
+        total += i**2
+    return total
 
-app=Flask(__name__)
+start_time = time.time()
+# Create as many as processes as there are CPU cores
+processes = cpu_count()
+pool = Pool(processes)
+print(pool.map(stress_cpu, [110000000, 110000000]))
+print("time cost: ", time.time() - start_time)
 
-@app.route('/', methods=['GET', 'POST'])
-def route():
-    global seed_value
-    ret = 'SUCCESS'
-    if request.method == 'POST':
+# example_script.py
+import sys
 
-       content = request.json
-       if 'num' in content:
-           seed_value = content['num']
+if len(sys.argv) != 2:
+    print("Usage: python example_script.py <number>")
+    sys.exit(1)
 
-       command = 'python3 stress_cpu.py ' + str(seed_value)
-       result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-       
-       # Check the return code
-       if result.returncode == 0:
-           return(result.stdout)
-       else:
-           print("Error executing the command.")
-           print("Error message:")
-           return(result.stderr)
-
-    if request.method == 'GET':
-           return socket.gethostname()
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+try:
+    number = float(sys.argv[1])
+    stress_cpu(number)
+except ValueError:
+    print("Invalid input. Please provide a valid number.")
+    sys.exit(1)
