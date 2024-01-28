@@ -16,7 +16,7 @@ def route():
        if 'num' in content:
            seed_value = content['num']
 
-       command = 'python3 /home/ubuntu/apps/stress_cpu.py ' + str(seed_value)
+       command = 'python3 stress_cpu.py ' + str(seed_value)
        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
        
        # Check the return code
