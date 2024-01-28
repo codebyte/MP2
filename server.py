@@ -17,15 +17,15 @@ def route():
            seed_value = content['num']
 
        command = 'python3 stress_cpu.py ' + str(seed_value)
-       result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-       
-       # Check the return code
-       if result.returncode == 0:
-           return(result.stdout)
-       else:
-           print("Error executing the command.")
-           print("Error message:")
-           return(result.stderr)
+
+       try : 
+          result = subprocess.Popen(['/home/ubuntu/MP2/stress_cpu.py', str(seed_value)], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)        
+       except Exception as e:
+          print("An exception occurred:", str(e))
+          return str(e)
+
+       return ret 
+
 
     if request.method == 'GET':
            return socket.gethostname()
