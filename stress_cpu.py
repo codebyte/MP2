@@ -24,7 +24,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 try:
-    number = float(sys.argv[1])
+    number = int(sys.argv[1])
     stress_cpu(number)
 except ValueError:
     print("Invalid input. Please provide a valid number.")
